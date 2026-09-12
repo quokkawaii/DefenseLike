@@ -1,4 +1,5 @@
 {
+  "description": "Load repository instructions and enforce the user-approved GitHub workflow.",
   "hooks": {
     "UserPromptSubmit": [
       {
@@ -8,6 +9,13 @@
             "command": "zsh \"$(git rev-parse --show-toplevel)/.codex/hooks/load-agents.zsh\"",
             "timeout": 10,
             "additionalContextLimit": 0
+          },
+          {
+            "type": "command",
+            "command": "zsh \"$(git rev-parse --show-toplevel)/.codex/hooks/github-workflow.zsh\"",
+            "timeout": 10,
+            "statusMessage": "GitHub 작업 절차 확인 중",
+            "additionalContextLimit": 2200
           }
         ]
       }
