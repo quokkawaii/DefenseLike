@@ -1,0 +1,462 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="DefenseLike 저장소의 사용자 승인형 GitHub PR 훅 운영 계획">
+  <title>GitHub PR 훅 운영 계획</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #08111f;
+      --panel: #101d30;
+      --panel-soft: #15243a;
+      --line: #2c405c;
+      --text: #edf4ff;
+      --muted: #a9b9cf;
+      --blue: #5ba8ff;
+      --green: #65d9a5;
+      --yellow: #ffc866;
+      --red: #ff7b88;
+      --purple: #b89cff;
+      --shadow: 0 18px 50px rgb(0 0 0 / 24%);
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      background:
+        radial-gradient(circle at 90% 0%, rgb(91 168 255 / 15%), transparent 28rem),
+        radial-gradient(circle at 0% 35%, rgb(101 217 165 / 8%), transparent 24rem),
+        var(--bg);
+      color: var(--text);
+      font-family: Pretendard, "Noto Sans KR", "Apple SD Gothic Neo", system-ui, sans-serif;
+      font-size: 1rem;
+      line-height: 1.65;
+    }
+
+    main {
+      width: min(1100px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 56px 0 80px;
+    }
+
+    header {
+      padding: 36px;
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      background: linear-gradient(135deg, rgb(21 36 58 / 96%), rgb(10 21 38 / 96%));
+      box-shadow: var(--shadow);
+    }
+
+    .eyebrow {
+      margin: 0 0 10px;
+      color: var(--blue);
+      font-size: .82rem;
+      font-weight: 800;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+    }
+
+    h1, h2, h3, p { margin-top: 0; }
+    h1 { margin-bottom: 12px; font-size: clamp(2rem, 5vw, 3.3rem); line-height: 1.15; }
+    h2 { margin-bottom: 18px; font-size: clamp(1.45rem, 3vw, 2rem); }
+    h3 { margin-bottom: 6px; font-size: 1.08rem; }
+
+    .lead {
+      max-width: 760px;
+      margin-bottom: 24px;
+      color: var(--muted);
+      font-size: 1.08rem;
+    }
+
+    .principles {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-top: 24px;
+    }
+
+    .principle {
+      min-height: 116px;
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: rgb(8 17 31 / 52%);
+    }
+
+    .principle strong { display: block; margin-bottom: 4px; color: var(--green); }
+    .principle span { color: var(--muted); font-size: .92rem; }
+
+    nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 24px 0 44px;
+    }
+
+    nav a {
+      padding: 9px 14px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: var(--text);
+      text-decoration: none;
+      background: var(--panel);
+    }
+
+    nav a:hover, nav a:focus-visible { border-color: var(--blue); outline: none; }
+
+    section { margin-top: 54px; }
+
+    .section-heading {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .number {
+      display: grid;
+      width: 36px;
+      height: 36px;
+      flex: 0 0 36px;
+      place-items: center;
+      border-radius: 11px;
+      color: #06101d;
+      background: var(--blue);
+      font-weight: 900;
+    }
+
+    .flow {
+      display: grid;
+      gap: 14px;
+    }
+
+    .step {
+      position: relative;
+      display: grid;
+      grid-template-columns: 54px 1fr auto;
+      gap: 16px;
+      align-items: start;
+      padding: 20px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: var(--panel);
+      box-shadow: 0 10px 28px rgb(0 0 0 / 14%);
+    }
+
+    .step:not(:last-child)::after {
+      position: absolute;
+      bottom: -15px;
+      left: 46px;
+      width: 2px;
+      height: 15px;
+      background: var(--line);
+      content: "";
+    }
+
+    .step-index {
+      display: grid;
+      width: 44px;
+      height: 44px;
+      place-items: center;
+      border: 1px solid rgb(91 168 255 / 48%);
+      border-radius: 50%;
+      color: var(--blue);
+      background: rgb(91 168 255 / 10%);
+      font-weight: 900;
+    }
+
+    .step p { margin-bottom: 0; color: var(--muted); }
+
+    .tag {
+      padding: 5px 9px;
+      border-radius: 999px;
+      color: var(--muted);
+      background: var(--panel-soft);
+      font-size: .78rem;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .tag.user { color: var(--green); background: rgb(101 217 165 / 10%); }
+    .tag.stop { color: var(--red); background: rgb(255 123 136 / 10%); }
+    .tag.report { color: var(--yellow); background: rgb(255 200 102 / 10%); }
+
+    .decision {
+      border-color: rgb(255 200 102 / 45%);
+      background: linear-gradient(90deg, rgb(255 200 102 / 8%), var(--panel));
+    }
+
+    .approval {
+      border-color: rgb(101 217 165 / 55%);
+      background: linear-gradient(90deg, rgb(101 217 165 / 10%), var(--panel));
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+
+    .card {
+      padding: 22px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: var(--panel);
+    }
+
+    .card ul { margin: 10px 0 0; padding-left: 20px; color: var(--muted); }
+    .card.good h3 { color: var(--green); }
+    .card.warn h3 { color: var(--yellow); }
+    .card.danger h3 { color: var(--red); }
+
+    .preview {
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: #07101d;
+      box-shadow: var(--shadow);
+    }
+
+    .preview-bar {
+      display: flex;
+      gap: 7px;
+      padding: 13px 16px;
+      border-bottom: 1px solid var(--line);
+      background: var(--panel-soft);
+    }
+
+    .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--red); }
+    .dot:nth-child(2) { background: var(--yellow); }
+    .dot:nth-child(3) { background: var(--green); }
+
+    pre {
+      overflow-x: auto;
+      margin: 0;
+      padding: 24px;
+      color: #dbeaff;
+      font: 0.9rem/1.7 "SFMono-Regular", Consolas, monospace;
+      white-space: pre-wrap;
+    }
+
+    .policy {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+      padding: 24px;
+      border: 1px solid rgb(184 156 255 / 38%);
+      border-radius: 18px;
+      background: linear-gradient(135deg, rgb(184 156 255 / 10%), var(--panel));
+    }
+
+    .policy p, .policy li { color: var(--muted); }
+    .policy ul { margin: 8px 0 0; padding-left: 20px; }
+
+    footer {
+      margin-top: 60px;
+      padding-top: 22px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: .9rem;
+    }
+
+    @media (max-width: 820px) {
+      .principles, .grid, .policy { grid-template-columns: 1fr 1fr; }
+      .step { grid-template-columns: 48px 1fr; }
+      .tag { grid-column: 2; justify-self: start; }
+    }
+
+    @media (max-width: 560px) {
+      main { width: min(100% - 20px, 1100px); padding-top: 20px; }
+      header { padding: 24px 20px; border-radius: 18px; }
+      .principles, .grid, .policy { grid-template-columns: 1fr; }
+      .step { padding: 17px; }
+      .section-heading { align-items: flex-start; }
+    }
+
+    @media print {
+      :root { color-scheme: light; --bg: #fff; --panel: #fff; --panel-soft: #f2f5f9; --line: #c8d0da; --text: #172033; --muted: #45556d; }
+      body { background: #fff; }
+      main { width: 100%; padding: 0; }
+      header, .step, .preview { box-shadow: none; }
+      nav { display: none; }
+      section { break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <p class="eyebrow">DefenseLike · Workflow Policy</p>
+      <h1>GitHub PR 훅 운영 계획</h1>
+      <p class="lead">PR은 자동으로 생성하지 않는다. 사용자가 요청하면 최신화와 검증을 진행하고, 한국어 미리보기를 보고한 뒤 최종 승인을 받아 생성한다.</p>
+
+      <div class="principles" aria-label="핵심 원칙">
+        <div class="principle"><strong>수동 시작</strong><span>사용자가 PR을 요청한 경우에만 준비한다.</span></div>
+        <div class="principle"><strong>먼저 최신화</strong><span>원격 main을 반영하고 충돌 여부를 확인한다.</span></div>
+        <div class="principle"><strong>한국어 보고</strong><span>제목·본문·변경 파일을 생성 전에 보여준다.</span></div>
+        <div class="principle"><strong>승인 후 생성</strong><span>명시적인 허락 전에는 push와 PR 생성을 하지 않는다.</span></div>
+      </div>
+    </header>
+
+    <nav aria-label="문서 목차">
+      <a href="#pr-flow">PR 생성 절차</a>
+      <a href="#preview">보고 형식</a>
+      <a href="#merge-flow">머지 이후</a>
+      <a href="#exceptions">예외 처리</a>
+      <a href="#implementation">구현 원칙</a>
+    </nav>
+
+    <section id="pr-flow">
+      <div class="section-heading"><span class="number">1</span><h2>사용자 요청형 PR 생성 절차</h2></div>
+      <div class="flow">
+        <article class="step">
+          <span class="step-index">01</span>
+          <div><h3>사용자가 PR을 요청한다</h3><p>“PR 준비해”, “PR 올려줘”처럼 명시적으로 요청한 경우에만 워크플로를 시작한다.</p></div>
+          <span class="tag user">사용자 시작</span>
+        </article>
+        <article class="step">
+          <span class="step-index">02</span>
+          <div><h3>현재 상태를 점검한다</h3><p>현재 브랜치, 변경 파일, 미커밋 작업, 대상 브랜치와 원격 저장소를 확인한다.</p></div>
+          <span class="tag">로컬 검사</span>
+        </article>
+        <article class="step">
+          <span class="step-index">03</span>
+          <div><h3>PR 대상 변경을 커밋한다</h3><p>사용자가 작업한 다른 변경이 섞이지 않도록 이번 작업에 해당하는 파일만 포함한다.</p></div>
+          <span class="tag">범위 제한</span>
+        </article>
+        <article class="step">
+          <span class="step-index">04</span>
+          <div><h3>GitHub 최신 상태를 반영한다</h3><p>origin의 최신 정보를 가져오고 현재 작업 브랜치를 최신 origin/main 위로 재배치한다.</p></div>
+          <span class="tag">fetch + rebase</span>
+        </article>
+        <article class="step decision">
+          <span class="step-index">05</span>
+          <div><h3>충돌 여부를 확인한다</h3><p>충돌이 발생하면 자동 해결하지 않고 파일 목록과 현재 상태를 사용자에게 보고한 뒤 중단한다.</p></div>
+          <span class="tag stop">충돌 시 중단</span>
+        </article>
+        <article class="step">
+          <span class="step-index">06</span>
+          <div><h3>변경사항을 검증한다</h3><p>가능한 테스트와 문법 검사를 실행하고, 실제 커밋과 변경 파일 목록을 다시 확인한다.</p></div>
+          <span class="tag">검증</span>
+        </article>
+        <article class="step">
+          <span class="step-index">07</span>
+          <div><h3>한국어 PR 초안을 보고한다</h3><p>제목, 본문, 브랜치, 커밋, 변경 파일과 검증 결과를 사용자가 읽기 쉽게 정리한다.</p></div>
+          <span class="tag report">미리보기</span>
+        </article>
+        <article class="step approval">
+          <span class="step-index">08</span>
+          <div><h3>사용자의 최종 승인을 기다린다</h3><p>승인하면 push와 PR 생성을 진행한다. 수정 요청이면 초안을 바꿔 다시 보고하고, 취소하면 생성하지 않는다.</p></div>
+          <span class="tag user">승인 필수</span>
+        </article>
+        <article class="step">
+          <span class="step-index">09</span>
+          <div><h3>PR을 생성하고 결과를 보고한다</h3><p>승인된 내용 그대로 GitHub에 올린 뒤 PR 번호와 URL을 전달한다. 자동 머지는 하지 않는다.</p></div>
+          <span class="tag">완료</span>
+        </article>
+      </div>
+    </section>
+
+    <section id="preview">
+      <div class="section-heading"><span class="number">2</span><h2>PR 생성 전 보고 형식</h2></div>
+      <div class="preview" aria-label="PR 미리보기 예시">
+        <div class="preview-bar" aria-hidden="true"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+        <pre>[PR 생성 예정]
+
+제목:
+기능: 사용자 승인형 GitHub PR 훅 추가
+
+대상 브랜치:
+main
+
+작업 브랜치:
+github-hook-creation
+
+변경 내용:
+- 사용자 요청이 있을 때만 PR 준비 시작
+- PR 생성 전 origin/main 최신화 및 충돌 검사
+- 한국어 PR 제목과 본문 생성
+- 사용자 최종 승인 이후에만 push 및 PR 생성
+
+검증 결과:
+- 훅 설정 형식 검사 완료
+- 셸 스크립트 문법 검사 완료
+- 원격 main과 충돌 없음
+
+이 내용으로 PR을 생성할까요?</pre>
+      </div>
+    </section>
+
+    <section id="merge-flow">
+      <div class="section-heading"><span class="number">3</span><h2>머지 이후 최신화와 브랜치 생성</h2></div>
+      <div class="flow">
+        <article class="step">
+          <span class="step-index">01</span>
+          <div><h3>사용자가 머지 완료를 알린다</h3><p>“머지했어”라는 알림이 새 작업 준비의 시작 신호다.</p></div>
+          <span class="tag user">사용자 시작</span>
+        </article>
+        <article class="step">
+          <span class="step-index">02</span>
+          <div><h3>미커밋 변경을 확인한다</h3><p>작업 트리가 깨끗하지 않으면 main 전환 전에 변경 파일을 보고하고 진행을 멈춘다.</p></div>
+          <span class="tag">안전 점검</span>
+        </article>
+        <article class="step">
+          <span class="step-index">03</span>
+          <div><h3>main을 최신화한다</h3><p>main으로 전환한 뒤 origin/main을 fast-forward 방식으로 가져와 머지 결과를 반영한다.</p></div>
+          <span class="tag">pull --ff-only</span>
+        </article>
+        <article class="step decision">
+          <span class="step-index">04</span>
+          <div><h3>이전 브랜치 삭제 여부를 확인한다</h3><p>GitHub 원격 브랜치와 로컬 브랜치를 따로 확인한다. 남아 있어도 임의로 삭제하지 않고 상태만 보고한다.</p></div>
+          <span class="tag report">삭제 상태 보고</span>
+        </article>
+        <article class="step approval">
+          <span class="step-index">05</span>
+          <div><h3>새 브랜치 주제를 확정한다</h3><p>사용자가 이미 주제를 말했다면 그 의미로 브랜치명을 만들고, 정하지 않았다면 먼저 질문한다.</p></div>
+          <span class="tag user">주제 확인</span>
+        </article>
+        <article class="step">
+          <span class="step-index">06</span>
+          <div><h3>최신 main에서 새 브랜치를 만든다</h3><p>브랜치명과 기준 커밋, 작업 트리 상태를 최종 보고하고 다음 작업을 시작한다.</p></div>
+          <span class="tag">새 작업 준비</span>
+        </article>
+      </div>
+    </section>
+
+    <section id="exceptions">
+      <div class="section-heading"><span class="number">4</span><h2>중단하거나 확인해야 하는 경우</h2></div>
+      <div class="grid">
+        <article class="card danger"><h3>즉시 중단</h3><ul><li>rebase 또는 최신화 과정에서 충돌 발생</li><li>main에 직접 PR 작업을 올리려는 상태</li><li>PR 대상이 아닌 사용자 변경이 섞인 상태</li><li>원격 저장소나 대상 브랜치를 확인할 수 없는 상태</li></ul></article>
+        <article class="card warn"><h3>사용자에게 질문</h3><ul><li>PR 제목이나 포함 범위가 불명확함</li><li>머지 후 새 브랜치 주제가 정해지지 않음</li><li>이전 원격·로컬 브랜치 삭제가 필요함</li><li>검증 실패를 수정할지 결정해야 함</li></ul></article>
+        <article class="card good"><h3>승인 후 실행</h3><ul><li>작업 브랜치 원격 push</li><li>한국어 제목·본문으로 PR 생성</li><li>기존 브랜치 삭제</li><li>충돌 파일 수정 후 rebase 계속</li></ul></article>
+        <article class="card"><h3>자동으로 하지 않음</h3><ul><li>작업 종료만으로 PR 생성</li><li>충돌 내용의 임의 선택</li><li>PR 자동 머지</li><li>사용자 변경 전체를 일괄 스테이징</li></ul></article>
+      </div>
+    </section>
+
+    <section id="implementation">
+      <div class="section-heading"><span class="number">5</span><h2>Codex 훅 구현 원칙</h2></div>
+      <div class="policy">
+        <div>
+          <h3>UserPromptSubmit 훅</h3>
+          <p>사용자 프롬프트를 기준으로 PR 요청 또는 머지 완료 상황을 감지하고, 해당 워크플로 규칙을 Codex의 추가 작업 지침으로 전달한다.</p>
+          <ul><li>일반 요청: 기존 AGENTS.md만 로드</li><li>PR 요청: PR 준비·최신화·보고 절차 적용</li><li>머지 알림: main 최신화·브랜치 확인 절차 적용</li></ul>
+        </div>
+        <div>
+          <h3>Stop 훅</h3>
+          <p>PR 생성 트리거로 사용하지 않는다. Stop은 턴 종료 시 실행될 수 있어, 사용자가 원할 때만 PR을 요청한다는 정책과 맞지 않는다.</p>
+          <ul><li>원격 변경 생성 금지</li><li>승인 상태 추측 금지</li><li>재귀적인 작업 지속 방지</li></ul>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <strong>문서 상태:</strong> 훅 구현 완료 · <strong>적용 브랜치:</strong> github-hook-creation
+    </footer>
+  </main>
+</body>
+</html>
