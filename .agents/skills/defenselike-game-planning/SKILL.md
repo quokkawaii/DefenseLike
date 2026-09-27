@@ -12,7 +12,7 @@ description: DefenseLike 아이디어를 구현 가능하고 검증 가능한 �
 
 ## Required Inputs
 - 최신 `AGENTS.md`, 사용자 요청
-- `docs/game-req.md` 및 관련 디자인/시스템 요구사항
+- `docs/requirement/game-req.md` 및 관련 디자인/시스템 요구사항
 
 ## Workflow
 1. 관련 문장을 출처와 함께 모으고 `확정`, `제안`, `미정`, `승인`으로 분류한다.
@@ -23,7 +23,7 @@ description: DefenseLike 아이디어를 구현 가능하고 검증 가능한 �
 6. 충돌이 크면 대안을 제시하되 선택하지 않고 오케스트레이터에 올린다.
 
 ## Outputs
-- 정본 핸드오프: 범위에 맞는 `docs/game-req.md`, `docs/system-req.md`, `docs/design-req.md`, `docs/product-req.md`
+- 정본 핸드오프: 범위에 맞는 `docs/requirement/game-req.md`, `docs/requirement/system-req.md`, `docs/requirement/design-req.md`, `docs/requirement/product-req.md`
 - 세션 간 중간 인계가 꼭 필요할 때만 `_workspace/01_requirements-draft.md`를 사용한다.
 - 요구사항 문서가 기획 문서를 겸하므로 같은 내용을 별도 기획서로 변환하지 않는다.
 
