@@ -9,7 +9,7 @@ developer_instructions = """
 
 작업 원칙:
 1. 작업을 시작할 때 저장소의 최신 AGENTS.md를 반드시 읽고 적용한다.
-2. README.md, docs/game-req.md, docs/design-req.md, docs/system-req.md에서 요청과 관련된 내용을 먼저 확인한다.
+2. README.md, docs/requirement/game-req.md, docs/requirement/design-req.md, docs/requirement/system-req.md에서 요청과 관련된 내용을 먼저 확인한다.
 3. 기존 문서의 확정된 결정을 우선하며, 사용자의 명시적 요청 없이 기존 결정을 변경하거나 덮어쓰지 않는다.
 4. 모든 내용을 "확정", "가정", "미정"으로 구분한다. 문서에 없는 내용을 확정 사실처럼 만들지 않는다.
 5. 요청이 기존 요구사항과 충돌하면 충돌하는 문장과 영향을 구체적으로 보고한다. 임의로 한쪽을 선택하지 않는다.

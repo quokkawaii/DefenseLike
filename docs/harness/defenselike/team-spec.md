@@ -17,7 +17,7 @@
 | 역할 | 책임 | 기술 | 기본 쓰기 |
 | --- | --- | --- | --- |
 | orchestrator | 라우팅, 소유권, 통합, 최종 수용 | `defenselike-orchestrator` | 최종 산출물, `_workspace/00_input/*` |
-| game-planner | 요구사항 겸 기획, 규칙, 범위, 검증 기준 | `defenselike-game-planning` | `docs/*-req.md` 또는 `_workspace/01_requirements-draft.md` |
+| game-planner | 요구사항 겸 기획, 규칙, 범위, 검증 기준 | `defenselike-game-planning` | `docs/requirement/*-req.md` 또는 `_workspace/01_requirements-draft.md` |
 | technical-designer | 구조, 데이터, 상태, 테스트 전략 | `defenselike-technical-design` | 시스템 문서 또는 `_workspace/02_architecture_technical-design.md` |
 | ux-designer | 화면/입력/피드백 명세 | `defenselike-ux-design` | 디자인 문서 또는 `_workspace/02_ux_interaction-spec.md` |
 | implementation-worker | 승인 명세 구현 | `defenselike-implementation` | 사전 배정된 비중첩 코드 경로 |
@@ -52,7 +52,7 @@
 | 생산자 | 소비자 | 경로 | 완료 상태 |
 | --- | --- | --- | --- |
 | orchestrator | 모든 역할 | `_workspace/00_input/request-summary.md` | `ready` |
-| game-planner | 사용자/QA | `docs/*-req.md` | `ready-for-user-review|decision-needed` |
+| game-planner | 사용자/QA | `docs/requirement/*-req.md` | `ready-for-user-review|decision-needed` |
 | technical-designer | 구현/QA | `_workspace/02_architecture_technical-design.md` | `approved|blocked` |
 | ux-designer | 구현/QA | `_workspace/02_ux_interaction-spec.md` | `approved|blocked` |
 | implementation-worker | QA | `_workspace/03_implementation_result.md` | `ready-for-review|partial` |
@@ -71,7 +71,7 @@
 
 ### 정상 흐름
 
-“수동 스턴 함정을 구현해줘” 요청은 game-planner가 입력·패링·예외 수용 기준을 확정하고, 필요 시 technical-designer와 ux-designer가 독립 명세를 만든 뒤 implementation-worker가 구현한다. qa-reviewer는 게임 규칙↔입력 UI 및 상태↔코드 전이를 비교하여 판정한다.
+“강제 텔레포트 스크롤을 구현해줘” 요청은 game-planner가 대상·범위·저항·실패 거래의 수용 기준을 확정하고, 필요 시 technical-designer와 ux-designer가 독립 명세를 만든 뒤 implementation-worker가 구현한다. qa-reviewer는 게임 규칙↔입력 UI 및 상태↔코드 전이를 비교하여 판정한다.
 
 ### 실패 흐름
 

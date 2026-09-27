@@ -7,12 +7,12 @@ description: DefenseLike의 로컬 싱글 플레이 제약 안에서 시스템 �
 
 ## When to Use
 - 새 기능이 여러 시스템에 걸치거나 저장 데이터, 상태 머신, 성능 경계를 정해야 할 때 사용한다.
-- 기술 스택 선정 또는 `docs/system-req.md` 구체화가 필요할 때 사용한다.
+- 기술 스택 선정 또는 `docs/requirement/system-req.md` 구체화가 필요할 때 사용한다.
 - 작은 로컬 코드 수정에는 별도 호출하지 않는다.
 
 ## Required Inputs
 - `확정` 또는 `승인` 상태의 요구사항과 수용 기준
-- `docs/system-req.md`, `docs/game-req.md`, 현재 코드 구조
+- `docs/requirement/system-req.md`, `docs/requirement/game-req.md`, 현재 코드 구조
 
 ## Workflow
 1. 런타임, 저장, 전투 시뮬레이션, UI 경계를 식별한다.

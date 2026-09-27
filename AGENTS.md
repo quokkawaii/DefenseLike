@@ -10,14 +10,20 @@ DefenseLike는 Steam 출시를 목표로 하는 싱글 플레이 디펜스 + 로
 DefenseLike/
 ├── AGENTS.md                 # AI 에이전트가 작업 전 반드시 읽어야 하는 지침 문서
 ├── README.md                 # 프로젝트 소개 및 사용 안내
-├── docs/                     # 프로젝트 요구사항 문서
-│   ├── design-req.md         # 디자인 요구사항
-│   ├── game-req.md           # 게임 기획 및 기능 요구사항
-│   ├── system-req.md         # 시스템 요구사항
-│   └── product-req.md        # 사업·출시·운영·공통 요구사항
+├── docs/
+│   ├── game_setting/         # 사용자 작성 게임 설정 원본
+│   │   ├── game.md
+│   │   ├── characters.md
+│   │   ├── monster.md
+│   │   └── scroll.md
+│   ├── requirement/          # 요구사항 정본
+│   │   ├── game-req.md
+│   │   ├── design-req.md
+│   │   ├── system-req.md
+│   │   └── product-req.md
+│   └── harness/defenselike/  # 팀 구성, 역할, 핸드오프 정본
 ├── .agents/skills/           # 런타임 중립적인 역할별 작업 방식
-├── .codex/agents/            # Codex용 선택적 역할 프로필(정본 아님)
-└── docs/harness/defenselike/ # 팀 구성, 역할, 핸드오프 정본
+└── .codex/agents/            # Codex용 선택적 역할 프로필(정본 아님)
 ```
 
 
