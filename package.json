@@ -1,0 +1,33 @@
+{
+  "name": "defenselike",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "electron-forge start",
+    "package": "electron-forge package --platform=win32 --arch=x64",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run --passWithNoTests"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/quokkawaii/DefenseLike.git"
+  },
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/quokkawaii/DefenseLike/issues"
+  },
+  "homepage": "https://github.com/quokkawaii/DefenseLike#readme",
+  "private": true,
+  "dependencies": {
+    "phaser": "3.90.0"
+  },
+  "devDependencies": {
+    "@electron-forge/cli": "^8.0.1",
+    "@electron-forge/plugin-vite": "^8.0.1",
+    "electron": "^44.5.1",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.3",
+    "vitest": "^4.1.11"
+  },
+  "main": ".vite/build/main.cjs",
+  "productName": "DefenseLike"
+}
