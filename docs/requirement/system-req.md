@@ -7,12 +7,12 @@
 | ID | 상태 | 요구사항 | 근거 | 검증 |
 | --- | --- | --- | --- | --- |
 | SYS-001 | 확정 | 소스 언어는 TypeScript를 사용한다. | 사용자 결정 | 프로젝트 설정 검사 |
-| SYS-002 | 확정 | 게임 프레임워크는 Phaser를 사용한다. | 사용자 결정 | 의존성 검사 |
+| SYS-002 | 확정 | 게임 프레임워크는 Phaser 3을 사용하며 버전은 3.x의 마지막 릴리스인 `3.90.0`으로 고정한다. Phaser 4로의 변경은 별도 요구사항과 사용자 승인을 거친다. | 사용자 결정, 2026-10-06 사용자 Phaser 3 사용 결정 | `package.json`과 lock 파일에서 `phaser`가 정확히 `3.90.0`인지 검사 |
 | SYS-003 | 확정 | TypeScript `strict` 검사를 사용하지 않으며 `strict: false`로 구성한다. 프로토타입과 실제 개발 과정 모두 strict 활성화를 필수 조건으로 두지 않는다. | 사용자 요구사항 인터뷰 결정 | TypeScript 설정에서 `strict: false`인지 검사하고 프로토타입·개발 빌드가 strict 활성화를 요구하지 않는지 확인한다. |
 | SYS-004 | 확정 | 백엔드 서버, WebSocket, 로그인과 DB를 사용하지 않는다. | `game-req.md` | 네트워크·의존성 검사 |
 | SYS-005 | 확정 | 정적 콘텐츠, 일반 설정, 영구 진행과 한 판의 휘발 상태를 모두 REST API 응답처럼 명시적인 필드와 관계를 가진 JSON 데이터 구조로 관리한다. 실제 백엔드·DB·네트워크 요청은 사용하지 않으며 배포 JSON, localStorage와 메모리 상태가 같은 데이터 계약 원칙을 따른다. | 사용자 JSON·REST API 형태 데이터 관리 결정 | 각 데이터 경계의 JSON 스키마와 실제 읽기·쓰기 객체를 비교하고 서버·DB·네트워크 의존성이 없는지 확인한다. |
 | SYS-006 | 확정 | `PRD-002`의 Steam 출시를 지원하는 데스크톱 실행 빌드를 제공한다. | `PRD-002` | Steam에서 배포한 빌드의 설치·실행 시험 |
-| SYS-007 | 확정 | Steam용 Windows 데스크톱 실행 빌드는 Electron으로 구성하고 Electron Forge로 패키징한다. Phaser·TypeScript 게임을 Electron 렌더러에서 실행하며 Windows x64 배포물만 생성한다. | 사용자 기술 인터뷰 1번 선택 및 Windows 전용 출시 최종 결정, `SYS-001`, `SYS-002`, `SYS-006`, `SYS-008`, Electron 공식 패키징 문서 | Electron Forge 설정에서 Windows x64 배포물이 생성되고 지원 환경에서 Phaser 게임의 실행·저장·종료가 동작하며 다른 운영체제용 배포물이 생성되지 않는지 검사한다. |
+| SYS-007 | 확정 | Steam용 Windows 데스크톱 실행 빌드는 Electron으로 구성하고 Electron Forge로 패키징한다. Phaser·TypeScript 게임을 Electron 렌더러에서 실행하며 Windows x64 배포물만 생성한다. 번들러는 Vite를 사용하고 Electron Forge의 Vite 플러그인으로 main·preload·renderer를 빌드한다. | 사용자 기술 인터뷰 1번 선택 및 Windows 전용 출시 최종 결정, 2026-10-06 사용자 Vite 번들러 결정, `SYS-001`, `SYS-002`, `SYS-006`, `SYS-008`, Electron 공식 패키징 문서, Electron Forge Vite Plugin | Electron Forge 설정이 Vite 플러그인으로 main·preload·renderer를 빌드하는지 확인하고, Windows x64 배포물이 생성되고 지원 환경에서 Phaser 게임의 실행·저장·종료가 동작하며 다른 운영체제용 배포물이 생성되지 않는지 검사한다. |
 | SYS-008 | 확정 | 최초 출시 실행 빌드는 Windows 10·11의 x64 CPU 아키텍처만 지원한다. Windows ARM64, macOS와 Linux용 빌드는 최초 출시 범위에서 제외한다. | 사용자 Windows 전용 출시 최종 결정, `PRD-020` | Windows 10·11 x64에서 설치·실행·저장·종료를 시험하고 제외된 운영체제·아키텍처용 빌드가 출시 구성에 포함되지 않는지 확인한다. |
 
 ## 2. 실행 상태와 시간
@@ -108,7 +108,7 @@
 
 | ID | 상태 | 요구사항 | 근거 | 검증 |
 | --- | --- | --- | --- | --- |
-| SYS-074 | 확정 | 테스트를 세 단계로 분리한다. Unit Test는 피해·원소 상성·생성 수량·승급·보상·Seed 재현·타깃 우선순위 같은 순수 게임 규칙을, Integration Test는 Scene 전환·게임 시작/종료·일시정지·증강 선택·localStorage 저장/로드·결과 정산 같은 시스템 연결을, Build Acceptance Test는 Windows 실행·전체화면·전체 런·몬스터 100마리 부하·저장/재실행·Steam 빌드 및 실행을 실제 배포 형태에서 검사한다. | 사용자 요구사항 인터뷰 결정, ISO/IEC/IEEE 29148 | 테스트 목록과 실행 구성을 검사해 각 사례가 해당 단계에 배치되고 세 단계 결과가 별도로 보고되는지 확인한다. |
+| SYS-074 | 확정 | 테스트를 세 단계로 분리한다. Unit Test는 피해·원소 상성·생성 수량·승급·보상·Seed 재현·타깃 우선순위 같은 순수 게임 규칙을, Integration Test는 Scene 전환·게임 시작/종료·일시정지·증강 선택·localStorage 저장/로드·결과 정산 같은 시스템 연결을, Build Acceptance Test는 Windows 실행·전체화면·전체 런·몬스터 100마리 부하·저장/재실행·Steam 빌드 및 실행을 실제 배포 형태에서 검사한다. Unit Test와 Integration Test는 Vitest로 실행한다. | 사용자 요구사항 인터뷰 결정, 2026-10-06 사용자 Vitest 결정, ISO/IEC/IEEE 29148 | Unit·Integration Test가 Vitest로 실행되는지 확인하고, 테스트 목록과 실행 구성을 검사해 각 사례가 해당 단계에 배치되고 세 단계 결과가 별도로 보고되는지 확인한다. |
 | SYS-075 | 확정 | 모든 승인 요구사항은 하나 이상의 검증 항목과 연결하며 요구사항만 있고 검증 방법이 없는 상태를 허용하지 않는다. | 사용자 요구사항 인터뷰 결정, ISO/IEC/IEEE 29148 | 승인 요구사항 전체를 순회해 검증 항목 연결이 하나 이상 존재하는지 검사한다. |
 | SYS-076 | 승인 | Steam Launch Option은 Windows x64 출시 빌드에 실제 포함된 실행 파일의 경로 및 파일명과 정확히 일치해야 한다. 구체적인 실행 파일명은 패키징 산출물이 정해진 뒤 등록하며, 비공개 Steam 브랜치 설치본에서 Steam의 실행 조작으로 정상 부팅되는지 검증한다. | 사용자 제안 항목 판단 위임에 따른 채택, SteamPipe, `PRD-030`, `PRD-031`, `SYS-079` | Windows x64 패키지의 실제 실행 파일과 Steam Launch Option 설정을 대조한다. 비공개 Steam 브랜치에서 설치한 뒤 Steam 라이브러리의 실행 조작으로 올바른 실행 파일이 시작되는지 확인한다. |
 | SYS-077 | 승인 | 최초 출시의 Windows x64 실행 파일, 한국어 리소스와 필수 게임 콘텐츠는 하나의 기본 Steam Depot으로 구성한다. 최초 출시에는 운영체제·언어·선택 콘텐츠별 추가 Depot을 만들지 않는다. 후속 출시에서 지원 운영체제·언어 또는 선택 설치 콘텐츠가 실제로 분리될 때에는 Depot 분리 범위를 별도 요구사항과 사용자 승인으로 결정한다. | 사용자 제안 항목 판단 위임에 따른 단일 Depot 채택, `PRD-020`, `PRD-021`, `PRD-030`, Steam Depots | 최초 출시 앱의 Depot 목록에 Windows x64·한국어·필수 콘텐츠를 포함한 기본 Depot 하나만 있는지 확인한다. 비공개 Steam 브랜치 설치본에 필요한 파일이 모두 포함되고 추가 OS·언어·선택 콘텐츠 Depot이 생성되지 않았는지 검사한다. |
@@ -177,6 +177,7 @@
 | SYS-131 | 확정 | 증강 런 상태는 획득 ID 집합, 등급별 새로고침 제외 ID 집합, 현재 선택의 카드 세 자리와 자리별 새로고침 사용 여부를 보유한다. 후보 생성 시 획득 ID와 새로고침 제외 ID를 배제하고, 해당 등급 후보가 소진됐을 때만 그 등급의 새로고침 제외 집합을 비운다. 이 상태는 영구 저장하지 않고 런 종료 시 폐기한다. (v1.1) | `GAME-282`~`GAME-290` | 선택·새로고침·후보 소진·런 종료의 상태 전이 검사 |
 | SYS-132 | 확정 | 피해·원소 상성·승급·보상·타깃 우선순위·몬스터 생성 수량 같은 순수 게임 규칙 계산은 가능한 한 Phaser 객체에 직접 의존하지 않게 분리한다. Phaser Scene은 화면 표시, Phaser Game Object 관리, 입력 전달과 애니메이션·렌더링 연결을 담당하며, 순수 게임 규칙은 Phaser를 실행하지 않고 Unit Test할 수 있어야 한다. | 사용자 요구사항 인터뷰 결정, `SYS-002`, `SYS-055`, `SYS-074` | 열거된 대표 규칙의 모듈 의존성을 검사하고 Phaser 런타임 없이 Unit Test를 실행한다. |
 | SYS-133 | 확정 | 전투 좌표는 1920×1080 논리 화면 안에서 사용하는 맵 로컬 좌표와 실제 화면 좌표를 분리한다. 맵 로컬 좌표의 기준점은 왼쪽 SpawnPoint `(0,0)`이고 오른쪽 SpawnPoint는 `(1100,0)`이다. 화면 좌표는 `screenX = mapX + offsetX`, `screenY = mapY + offsetY`로 산출하며, HUD 배치로 화면상의 전투판 위치가 바뀌어도 경로·Cell의 맵 로컬 좌표는 변경하지 않는다. 포탈은 Grid Block이나 Path Point에 포함하지 않는 별도 Sprite/Image이고, 실제 생성 판정은 SpawnPoint로 관리한다. 몬스터는 SpawnPoint에서 생성된 뒤 자기 경로의 `Path[0]`으로 연속 이동하여 진입하고, 각 Path Point 사이를 연속 이동하며 마지막 Point 다음에는 같은 경로의 `Path[0]`으로 이어서 순환한다. 왼쪽·오른쪽 경로 배열은 좌표가 같은 중앙 구간에서도 별도 데이터로 유지한다. | 사용자 제공 `DefenseLike_좌표계_설계_확정안.md`, `GAME-029`, `GAME-038`, `GAME-275`, `SYS-127`, `UX-198`, `UX-199` | 두 SpawnPoint와 `UX-205`의 좌우 24개 Path 배열 및 48개 Cell 좌표를 대조한다. 포탈이 Grid·Path에서 제외되고 각 SpawnPoint에서 생성된 몬스터가 자기 `Path[0]`에 진입해 연속 순환하는지 확인한다. 화면 Offset을 변경해도 맵 로컬 좌표와 경로 소속이 유지되고 중앙 공유 좌표에서도 두 경로 데이터가 합쳐지지 않는지 검사한다. |
+| SYS-134 | 확정 | 소스 폴더 구조는 Electron Forge 공식 Vite TypeScript 템플릿과 Phaser 공식 Vite TypeScript 템플릿의 뼈대를 따른다. `src/main.ts`(Electron 메인), `src/preload.ts`(최소 노출 API), `src/renderer.ts`(렌더러 시작점), `src/game/main.ts`(Phaser 게임 설정), `src/game/scenes/`(`SYS-010`의 Scene)를 두고, 그 안에 실무 관례인 기능별 묶음으로 `src/game/core/`(입력·저장 등 공통)와 `src/game/features/`의 `stage`·`combat`·`monster`·`unit`·`scroll`·`economy`·`meta`(`SYS-055`의 시스템)를 추가한다. 정적 콘텐츠 JSON은 `content/`, 문자열 리소스는 `locales/`, 이미지·사운드는 `public/assets/`, 테스트는 `tests/unit/`·`tests/integration/`에 둔다. 기능별 묶음은 공식 문서의 권장이 아닌 실무 관례다. | 2026-10-06 사용자 폴더 구조 결정, Electron Forge `template-vite-typescript`, Phaser `template-vite-ts`, `SYS-010`, `SYS-050`, `SYS-055`, `SYS-074`, `SYS-088`, `SYS-132` | 저장소의 진입 파일·폴더 위치가 이 구조와 일치하고 각 시스템 코드가 대응하는 `features/` 폴더에 있는지 검사한다. |
 
 ## 11. 사용자 리뷰 순서
 
@@ -186,7 +187,7 @@
 4. `SYS-066`~`SYS-077`, `SYS-079`~`SYS-080`: 품질·시험·배포
 5. `SYS-081`~`SYS-094`: 장애·현지화·빌드 운영
 6. `SYS-095`~`SYS-117`: 부팅 오류·결정성·호환성·실행환경·운영 데이터·인터뷰 확정 저장 상태
-7. `SYS-127`~`SYS-133`: v1.1 두 필드·생성·보스·버프·증강 상태, Phaser 비의존 규칙 경계와 전투 맵 로컬 좌표
+7. `SYS-127`~`SYS-134`: v1.1 두 필드·생성·보스·버프·증강 상태, Phaser 비의존 규칙 경계, 전투 맵 로컬 좌표와 소스 폴더 구조
 
 ## 12. 참고 공식 문서
 

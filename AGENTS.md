@@ -38,7 +38,16 @@ DefenseLike/
 - 요구사항에는 고유 ID, 상태, 근거와 검증 방법을 두고 사용자가 항목별로 승인할 수 있게 한다.
 - 사용자가 이미 결정한 `확정`과 항목별 리뷰를 통과한 `승인`만 개발·디자인 근거로 사용할 수 있다. `제안` 또는 `미정`은 사용할 수 없다.
 - 병렬 쓰기는 서로 겹치지 않는 파일에만 허용한다. 경계가 겹치면 직렬화하고 최종 통합은 오케스트레이터가 담당한다.
-- 빌드·테스트 명령은 기술 스택이 확정된 뒤 이 문서에 추가한다. 현재는 문서와 내부 참조 검증을 수행한다.
+- 빌드·테스트 명령은 아래 `빌드·테스트 명령`을 사용한다. 문서 변경 시에는 문서와 내부 참조 검증도 함께 수행한다.
+
+# 빌드·테스트 명령
+
+- `npm install`: 의존성 설치
+- `npm start`: Electron Forge 개발 실행 (Vite 개발 서버)
+- `npm run typecheck`: TypeScript 타입 검사 (`strict: false`, `SYS-003`)
+- `npm test`: Vitest로 Unit·Integration Test 실행 (`SYS-074`)
+- `npx vitest run tests/unit/<파일>.test.ts`: 단일 테스트 파일 실행
+- `npm run package`: Windows x64 패키징, 결과는 `out/DefenseLike-win32-x64/` (`SYS-007`)
 
 
 # 워크플로우 순서

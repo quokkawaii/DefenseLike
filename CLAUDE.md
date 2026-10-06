@@ -9,12 +9,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 @AGENTS.md
 @docs/AGENTS.md
 
-## 현재 저장소 상태
+## 코드 구조
 
-- 아직 게임 소스 코드가 없다. 저장소는 요구사항 겸 기획 문서 단계이며, 빌드·린트·테스트 명령은 없다(`AGENTS.md`: 기술 스택 확정 후 추가). 현재 검증은 문서와 내부 참조 검증이다.
-- `node_modules/`는 추적되지 않으며 `package.json`이 없다. 이를 근거로 빌드 환경을 추정하지 않는다.
-- 기술 기준(`docs/AGENTS.md`): TypeScript + Phaser, 백엔드·DB 없음, 로컬 JSON·로컬 스토리지, Steam 배포. 데스크톱 패키징 기술은 별도 결정 사항이다.
-
+- 기술 스택: TypeScript(`strict: false`) + Phaser 3.90.0 + Electron/Electron Forge(Vite 플러그인) + Vitest. 근거는 `SYS-001`~`SYS-003`, `SYS-007`, `SYS-074`. 빌드·테스트 명령은 `AGENTS.md`의 `빌드·테스트 명령`을 따른다.
+- 폴더 구조는 `SYS-134`가 정본이다. Electron 진입점은 `src/main.ts`(메인)·`src/preload.ts`(최소 노출 API, `SYS-073`)·`src/renderer.ts`이고, Phaser 게임은 `src/game/` 아래에 `scenes/`(`SYS-010`), `core/`(공통), `features/<시스템>/`(`SYS-055`의 Stage·Combat·Monster·Unit·Scroll·Economy·Meta)로 나눈다.
+- 순수 게임 규칙은 Phaser에 의존하지 않게 작성해 Phaser 없이 Vitest로 테스트한다(`SYS-132`).
+- Forge 8 Vite 플러그인은 main·preload를 `.vite/build/*.cjs`로 출력하므로 `package.json`의 `main`과 preload 경로는 `.cjs`를 사용한다.
 ## 문서 구조의 큰 그림
 
 - `docs/game_setting/*.md`: 사용자가 작성한 설정 원본. 요구사항의 근거로 인용된다.
