@@ -12,7 +12,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## 코드 구조
 
 - 기술 스택: TypeScript(`strict: false`) + Phaser 3.90.0 + Electron/Electron Forge(Vite 플러그인) + Vitest. 근거는 `SYS-001`~`SYS-003`, `SYS-007`, `SYS-074`. 빌드·테스트 명령은 `AGENTS.md`의 `빌드·테스트 명령`을 따른다.
-- 폴더 구조는 `SYS-134`가 정본이다. Electron 진입점은 `src/main.ts`(메인)·`src/preload.ts`(최소 노출 API, `SYS-073`)·`src/renderer.ts`이고, Phaser 게임은 `src/game/` 아래에 `scenes/`(`SYS-010`), `core/`(공통), `features/<시스템>/`(`SYS-055`의 Stage·Combat·Monster·Unit·Scroll·Economy·Meta)로 나눈다.
+- 폴더 구조는 `SYS-134`가 정본이다. Electron 진입점은 `src/main.ts`(메인)·`src/preload.ts`(최소 노출 API, `SYS-073`)·`src/renderer.ts`이고, Phaser 게임 설정은 `src/game/main.ts`, Scene은 `src/game/scenes/`(`SYS-010`)에 둔다. 모든 타입은 `src/types/`, 모든 함수(`SYS-055`의 시스템 포함)는 `src/func/<관련 묶음>/`에 둔다. JSON은 `src/content/<이름>.json` → `src/func/<묶음>/<이름>JsonFunc.ts` → 같은 묶음의 함수 파일 순서로 사용한다(예: `src/content/map.json` → `src/func/map/mapJsonFunc.ts` → `src/func/map/map.ts`).
 - 순수 게임 규칙은 Phaser에 의존하지 않게 작성해 Phaser 없이 Vitest로 테스트한다(`SYS-132`).
 - Forge 8 Vite 플러그인은 main·preload를 `.vite/build/*.cjs`로 출력하므로 `package.json`의 `main`과 preload 경로는 `.cjs`를 사용한다.
 ## 문서 구조의 큰 그림
