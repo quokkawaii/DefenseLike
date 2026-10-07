@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 import { BattleScene } from './scenes/BattleScene';
 
-// SYS-031, SYS-032, SYS-034: 1920×1080 논리 좌표, 16:9 비례 확대·축소
+// 화면 크기는 1920×1080 기준이고, 창 크기에 맞춰 16:9 비율을 지키며 늘리고 줄인다 (SYS-031, 032, 034)
 const config: Phaser.Types.Core.GameConfig = {
   type: Phaser.AUTO,
   parent: 'game',
@@ -11,7 +11,7 @@ const config: Phaser.Types.Core.GameConfig = {
     mode: Phaser.Scale.FIT,
     autoCenter: Phaser.Scale.CENTER_BOTH,
   },
-  // 등록된 Scene 목록 (SYS-010). 1단계는 BattleScene만 사용
+  // 게임에 등록할 화면(Scene) 목록. 지금은 전투 화면 하나다 (SYS-010)
   scene: [BattleScene],
 };
 

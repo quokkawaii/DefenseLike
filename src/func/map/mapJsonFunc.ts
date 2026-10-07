@@ -1,10 +1,41 @@
-// src/content/map.json 을 읽어 MapData 타입으로 제공하는 JSON 관리 함수
-// 흐름: src/content/map.json → mapJsonFunc.ts(이 파일) → map.ts
-// JSON은 Vite가 빌드할 때 모듈로 함께 묶는다 (읽기 전용 배포 자산, SYS-050)
+// map.json에서 필요한 데이터 하나만 꺼내 주는 함수 모음 (SYS-050)
+// 예: getMonsterRoad()는 몬스터 길만, getUnitCells()는 유닛 칸만 돌려준다
 import mapJson from '../../content/map.json';
-import type { MapData } from '../../types/map';
+import type { MapJson } from '../../types/mapJson';
+import type { MonsterRoad } from '../../types/monsterRoad';
+import type { MonsterSpawnPoints } from '../../types/monsterSpawnPoints';
+import type { UnitCells } from '../../types/unitCell';
+import { throwIfBlockSizeTooSmall } from '../../error/blockError';
+import { throwIfVersionEmpty } from '../../error/versionError';
+import { throwIfMonsterRoadEmpty } from '../../error/monsterRoadError';
+import { throwIfUnitCellsEmpty } from '../../error/unitCellError';
 
-/** 맵 JSON 데이터를 MapData 타입으로 반환한다 */
-export function getMapData(): MapData {
-  return mapJson as MapData;
+const map: MapJson = mapJson;
+const MAP_JSON_NAME = 'map.json';
+
+/** 블럭 한 칸의 크기(px) */
+export function getBlockSize(): number {
+  throwIfVersionEmpty(MAP_JSON_NAME, map.version);
+  throwIfBlockSizeTooSmall(map.blockSize);
+  return map.blockSize;
+}
+
+/** 몬스터가 걷는 길 (필드별 24개 좌표) */
+export function getMonsterRoad(): MonsterRoad {
+  throwIfVersionEmpty(MAP_JSON_NAME, map.version);
+  throwIfMonsterRoadEmpty(map.monsterRoad);
+  return map.monsterRoad;
+}
+
+/** 몬스터가 생성되는 위치 (필드마다 하나) */
+export function getMonsterSpawnPoints(): MonsterSpawnPoints {
+  throwIfVersionEmpty(MAP_JSON_NAME, map.version);
+  return map.monsterSpawnPoints;
+}
+
+/** 유닛을 놓을 수 있는 칸 전부 (필드별 24개) */
+export function getUnitCells(): UnitCells {
+  throwIfVersionEmpty(MAP_JSON_NAME, map.version);
+  throwIfUnitCellsEmpty(map.unitCells);
+  return map.unitCells;
 }
