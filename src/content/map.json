@@ -1,11 +1,11 @@
 {
   "version": "1.1V",
   "blockSize": 110,
-  "spawnPoints": {
+  "monsterSpawnPoints": {
     "LEFT": { "x": 0, "y": 0 },
     "RIGHT": { "x": 1100, "y": 0 }
   },
-  "paths": {
+  "monsterRoad": {
     "LEFT": [
       { "x": 0, "y": 110 },
       { "x": 110, "y": 110 },
@@ -59,10 +59,58 @@
       { "x": 1100, "y": 220 }
     ]
   },
-  "cellOrigin": {
-    "LEFT": { "x": 110, "y": 220 },
-    "RIGHT": { "x": 660, "y": 220 }
-  },
-  "cellRows": 6,
-  "cellCols": 4
+  "unitCells": {
+    "LEFT": [
+      { "row": 0, "col": 0, "center": { "x": 110, "y": 220 } },
+      { "row": 0, "col": 1, "center": { "x": 220, "y": 220 } },
+      { "row": 0, "col": 2, "center": { "x": 330, "y": 220 } },
+      { "row": 0, "col": 3, "center": { "x": 440, "y": 220 } },
+      { "row": 1, "col": 0, "center": { "x": 110, "y": 330 } },
+      { "row": 1, "col": 1, "center": { "x": 220, "y": 330 } },
+      { "row": 1, "col": 2, "center": { "x": 330, "y": 330 } },
+      { "row": 1, "col": 3, "center": { "x": 440, "y": 330 } },
+      { "row": 2, "col": 0, "center": { "x": 110, "y": 440 } },
+      { "row": 2, "col": 1, "center": { "x": 220, "y": 440 } },
+      { "row": 2, "col": 2, "center": { "x": 330, "y": 440 } },
+      { "row": 2, "col": 3, "center": { "x": 440, "y": 440 } },
+      { "row": 3, "col": 0, "center": { "x": 110, "y": 550 } },
+      { "row": 3, "col": 1, "center": { "x": 220, "y": 550 } },
+      { "row": 3, "col": 2, "center": { "x": 330, "y": 550 } },
+      { "row": 3, "col": 3, "center": { "x": 440, "y": 550 } },
+      { "row": 4, "col": 0, "center": { "x": 110, "y": 660 } },
+      { "row": 4, "col": 1, "center": { "x": 220, "y": 660 } },
+      { "row": 4, "col": 2, "center": { "x": 330, "y": 660 } },
+      { "row": 4, "col": 3, "center": { "x": 440, "y": 660 } },
+      { "row": 5, "col": 0, "center": { "x": 110, "y": 770 } },
+      { "row": 5, "col": 1, "center": { "x": 220, "y": 770 } },
+      { "row": 5, "col": 2, "center": { "x": 330, "y": 770 } },
+      { "row": 5, "col": 3, "center": { "x": 440, "y": 770 } }
+    ],
+    "RIGHT": [
+      { "row": 0, "col": 0, "center": { "x": 660, "y": 220 } },
+      { "row": 0, "col": 1, "center": { "x": 770, "y": 220 } },
+      { "row": 0, "col": 2, "center": { "x": 880, "y": 220 } },
+      { "row": 0, "col": 3, "center": { "x": 990, "y": 220 } },
+      { "row": 1, "col": 0, "center": { "x": 660, "y": 330 } },
+      { "row": 1, "col": 1, "center": { "x": 770, "y": 330 } },
+      { "row": 1, "col": 2, "center": { "x": 880, "y": 330 } },
+      { "row": 1, "col": 3, "center": { "x": 990, "y": 330 } },
+      { "row": 2, "col": 0, "center": { "x": 660, "y": 440 } },
+      { "row": 2, "col": 1, "center": { "x": 770, "y": 440 } },
+      { "row": 2, "col": 2, "center": { "x": 880, "y": 440 } },
+      { "row": 2, "col": 3, "center": { "x": 990, "y": 440 } },
+      { "row": 3, "col": 0, "center": { "x": 660, "y": 550 } },
+      { "row": 3, "col": 1, "center": { "x": 770, "y": 550 } },
+      { "row": 3, "col": 2, "center": { "x": 880, "y": 550 } },
+      { "row": 3, "col": 3, "center": { "x": 990, "y": 550 } },
+      { "row": 4, "col": 0, "center": { "x": 660, "y": 660 } },
+      { "row": 4, "col": 1, "center": { "x": 770, "y": 660 } },
+      { "row": 4, "col": 2, "center": { "x": 880, "y": 660 } },
+      { "row": 4, "col": 3, "center": { "x": 990, "y": 660 } },
+      { "row": 5, "col": 0, "center": { "x": 660, "y": 770 } },
+      { "row": 5, "col": 1, "center": { "x": 770, "y": 770 } },
+      { "row": 5, "col": 2, "center": { "x": 880, "y": 770 } },
+      { "row": 5, "col": 3, "center": { "x": 990, "y": 770 } }
+    ]
+  }
 }
